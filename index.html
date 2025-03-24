@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Construction Management System</h1>
+        
+        <div class="tabs">
+            <button class="tab" onclick="showProjects()">Projects</button>
+            <button class="tab" onclick="showSuppliers()">Suppliers</button>
+        </div>
+
+        <!-- Projects Section -->
+        <div id="projectsSection">
+            <div class="form-container">
+                <h2>Add/Edit Project</h2>
+                <form id="projectForm">
+                    <input type="hidden" id="projectId">
+                    <div class="form-group">
+                        <label>Project Name</label>
+                        <input type="text" id="projectName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="projectLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="projectStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="projectEndDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Budget</label>
+                        <input type="number" id="projectBudget" required>
+                    </div>
+                    <button type="submit">Save Project</button>
+                </form>
+            </div>
+
+            <table id="projectsTable">
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Location</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Budget</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projectsTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Suppliers Section -->
+        <div id="suppliersSection" style="display: none;">
+            <div class="form-container">
+                <h2>Add/Edit Supplier</h2>
+                <form id="supplierForm">
+                    <input type="hidden" id="supplierId">
+                    <div class="form-group">
+                        <label>Supplier Name</label>
+                        <input type="text" id="supplierName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Person</label>
+                        <input type="text" id="supplierContact" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="supplierEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="supplierPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Materials Supplied</label>
+                        <input type="text" id="supplierMaterials" required>
+                    </div>
+                    <button type="submit">Save Supplier</button>
+                </form>
+            </div>
+
+            <table id="suppliersTable">
+                <thead>
+                    <tr>
+                        <th>Supplier Name</th>
+                        <th>Contact Person</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Materials</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="suppliersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

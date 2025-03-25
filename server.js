@@ -13,7 +13,7 @@ app.use(express.json());
 // MongoDB Connection
 const MONGODB_URI =
   process.env.MONGODB_URI ||
-  "mongodb+srv://admin:Mominawah786@cluster0.7i8tx.mongodb.net/construction_management?retryWrites=true&w=majority";
+  "mongodb+srv://admin:Momin%40123@cluster0.7i8tx.mongodb.net/construction_management?retryWrites=true&w=majority"
 
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const fs = require("fs");
-require("dotenv").config(); // Load environment variables
+require("dotenv").config(); // For environment variables
 const path = require("path");
 
 const app = express();
@@ -50,7 +50,6 @@ const supplierSchema = new mongoose.Schema({
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
 
-// Routes
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
@@ -143,19 +142,13 @@ app.delete("/suppliers/:id", async (req, res) => {
 // JSON Data Import Function
 const importJSONData = async () => {
   try {
-    if (fs.existsSync("suppliers.json")) {
-      const suppliersData = JSON.parse(
-        fs.readFileSync("suppliers.json", "utf8")
-      );
-      await Supplier.insertMany(suppliersData, { ordered: false });
-      console.log("Suppliers data inserted successfully");
-    }
+    const suppliersData = JSON.parse(fs.readFileSync("suppliers.json", "utf8"));
+    await Supplier.insertMany(suppliersData, { ordered: false });
+    console.log("Suppliers data inserted successfully");
 
-    if (fs.existsSync("projects.json")) {
-      const projectsData = JSON.parse(fs.readFileSync("projects.json", "utf8"));
-      await Project.insertMany(projectsData, { ordered: false });
-      console.log("Projects data inserted successfully");
-    }
+    const projectsData = JSON.parse(fs.readFileSync("projects.json", "utf8"));
+    await Project.insertMany(projectsData, { ordered: false });
+    console.log("Projects data inserted successfully");
   } catch (error) {
     console.error("Error inserting JSON data:", error);
   }
@@ -168,7 +161,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
 

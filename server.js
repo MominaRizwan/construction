@@ -2,19 +2,22 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const fs = require("fs");
-require("dotenv").config(); // For environment variables
+require("dotenv").config(); // Load environment variables
+const path = require("path");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname)));
 
 // MongoDB Connection
 const MONGODB_URI =
   process.env.MONGODB_URI ||
   "mongodb+srv://admin:Mominawah786@cluster0.7i8tx.mongodb.net/construction_management?retryWrites=true&w=majority";
 
+mongoose.set("strictQuery", false);
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB Atlas"))
@@ -47,6 +50,11 @@ const supplierSchema = new mongoose.Schema({
 
 const Supplier = mongoose.model("Supplier", supplierSchema);
 
+// Routes
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 // Project Routes
 app.get("/projects", async (req, res) => {
   try {
@@ -58,8 +66,8 @@ app.get("/projects", async (req, res) => {
 });
 
 app.post("/projects", async (req, res) => {
-  const project = new Project(req.body);
   try {
+    const project = new Project(req.body);
     const newProject = await project.save();
     res.status(201).json(newProject);
   } catch (error) {
@@ -69,12 +77,11 @@ app.post("/projects", async (req, res) => {
 
 app.put("/projects/:id", async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!project) return res.status(404).json({ message: "Project not found" });
-
-    Object.assign(project, req.body);
-    const updatedProject = await project.save();
-    res.json(updatedProject);
+    res.json(project);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -84,7 +91,6 @@ app.delete("/projects/:id", async (req, res) => {
   try {
     const result = await Project.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ message: "Project not found" });
-
     res.json({ message: "Project deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -102,8 +108,8 @@ app.get("/suppliers", async (req, res) => {
 });
 
 app.post("/suppliers", async (req, res) => {
-  const supplier = new Supplier(req.body);
   try {
+    const supplier = new Supplier(req.body);
     const newSupplier = await supplier.save();
     res.status(201).json(newSupplier);
   } catch (error) {
@@ -113,13 +119,12 @@ app.post("/suppliers", async (req, res) => {
 
 app.put("/suppliers/:id", async (req, res) => {
   try {
-    const supplier = await Supplier.findById(req.params.id);
+    const supplier = await Supplier.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!supplier)
       return res.status(404).json({ message: "Supplier not found" });
-
-    Object.assign(supplier, req.body);
-    const updatedSupplier = await supplier.save();
-    res.json(updatedSupplier);
+    res.json(supplier);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -129,7 +134,6 @@ app.delete("/suppliers/:id", async (req, res) => {
   try {
     const result = await Supplier.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ message: "Supplier not found" });
-
     res.json({ message: "Supplier deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -139,13 +143,19 @@ app.delete("/suppliers/:id", async (req, res) => {
 // JSON Data Import Function
 const importJSONData = async () => {
   try {
-    const suppliersData = JSON.parse(fs.readFileSync("suppliers.json", "utf8"));
-    await Supplier.insertMany(suppliersData, { ordered: false });
-    console.log("Suppliers data inserted successfully");
+    if (fs.existsSync("suppliers.json")) {
+      const suppliersData = JSON.parse(
+        fs.readFileSync("suppliers.json", "utf8")
+      );
+      await Supplier.insertMany(suppliersData, { ordered: false });
+      console.log("Suppliers data inserted successfully");
+    }
 
-    const projectsData = JSON.parse(fs.readFileSync("projects.json", "utf8"));
-    await Project.insertMany(projectsData, { ordered: false });
-    console.log("Projects data inserted successfully");
+    if (fs.existsSync("projects.json")) {
+      const projectsData = JSON.parse(fs.readFileSync("projects.json", "utf8"));
+      await Project.insertMany(projectsData, { ordered: false });
+      console.log("Projects data inserted successfully");
+    }
   } catch (error) {
     console.error("Error inserting JSON data:", error);
   }
